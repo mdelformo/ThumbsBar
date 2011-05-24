@@ -22,13 +22,15 @@ if ($req == "show") {
 class ThumbsBar {
 
 	private $dir;
+	private $filename;
 	private $files;
 	private $imgs;
 
-	function ThumbsBar($dir = 'img/') {
+	function ThumbsBar($dir = 'img/', $filename = 'thumbsbar.jpg') {
 
-		$this->dir 		 = $dir;
-		$this->files	 = $this->getImages($this->dir);
+		$this->dir 		= $dir;
+		$this->filename	= $filename;
+		$this->files	= $this->getImages($this->dir);
 		
 	}
 
@@ -56,7 +58,7 @@ class ThumbsBar {
 		$thumbsbar = new Imagick();
 		$thumbsbar->newImage($total_width, $height, new ImagickPixel('black'));
 		$thumbsbar->setImageFormat('jpeg');
-		$thumbsbar->setImageProperty('Xpos', 'testing!');
+		$thumbsbar->setImageProperty('comment', 'testing!');
 		
 		$thumbx = 0;
 		
@@ -87,8 +89,10 @@ class ThumbsBar {
 
 	public function getThumbs() {
 
-		$thumbsbar = new Imagick('img/thumbsbar.jpg');
-		return $thumbsbar->getImageProperty('Xpos');
+		$thumbsbar = new Imagick($this->dir . $this->filename);
+		//return $thumbsbar->getImageProperty('comment');
+		
+		return '<img src=' . $this->dir . $this->filename . '></img>';
 		
 	}
 
