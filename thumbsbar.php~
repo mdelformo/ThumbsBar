@@ -1,11 +1,10 @@
 <?php
 
-$tb 	= new ThumbsBar();
-
 $req	= $_GET["q"];
 
 if ($req == "create") {
 
+	$tb = new ThumbsBar();
 	$tb->createThumbs(200, 100);
 	
 	echo "Thumbnails created";
@@ -14,6 +13,7 @@ if ($req == "create") {
 
 if ($req == "show") {
 
+	$tb = new ThumbsBar();
 	echo $tb->getThumbs();
 
 }
@@ -24,7 +24,6 @@ class ThumbsBar {
 	private $dir;
 	private $filename;
 	private $files;
-	private $imgs;
 
 	function ThumbsBar($dir = 'img/', $filename = 'thumbsbar.jpg') {
 
@@ -46,6 +45,8 @@ class ThumbsBar {
 			$thumb = new Imagick($this->dir . $file);
 			$thumb->thumbnailImage($width, $height, true);
 			
+			// Workaround. Error in Imagick getFilename()
+            $thumb->setFilename($file);
 			$thumbs[] = $thumb;
 			
 			$total_width += $thumb->getImageWidth();
@@ -60,17 +61,27 @@ class ThumbsBar {
 		$thumbsbar->setImageFormat('jpeg');
 		$thumbsbar->setImageProperty('comment', 'testing!');
 		
-		$thumbx = 0;
+		// thumbx tracks the position of each thumbnail in the new canvas image
+		// comment saves thumbnail data (filname, x, width)
+		
+		$thumbx		= 0;
+		$comment	= '';
 		
 		// Append every thumb to the new image file
 		
 		foreach ($thumbs as $thumb) {
-		
+			
+			$thumb_width = $thumb->getImageWidth();
+			
+			$comment .= $thumb->getFileName() . ',' . $thumbx . ',' . $thumb_width . '|';
+			
 			$thumbsbar->compositeImage($thumb, imagick::COMPOSITE_OVER, $thumbx, 0);
 			
-			$thumbx += $thumb->getImageWidth();
+			$thumbx += $thumb_width;
 		
 		}
+		
+		$thumbsbar->setImageProperty('comment', $comment);
 		
 		// Write thumbnails to file
 		
@@ -90,9 +101,12 @@ class ThumbsBar {
 	public function getThumbs() {
 
 		$thumbsbar = new Imagick($this->dir . $this->filename);
-		//return $thumbsbar->getImageProperty('comment');
 		
-		return '<img src=' . 'img/thumbsbar.jpg' . '></img>';
+		// Temporary array to view thumbnail data
+		$filelist	= explode('|', $thumbsbar->getImageProperty('comment'));
+		$tmp		= implode('<br>', $filelist);
+		
+		return	'<img src=' . $this->dir . $this->filename . '></img>';
 		
 	}
 
