@@ -66,6 +66,9 @@ function keyDown(e) {
 	
 	// Does this work in all browsers?
 	wwidth	= window.innerWidth;
+	
+	// Kill current animation, if active
+	clearInterval(timer);
 
 	// Left arrow key
 	if (keyNum == 37) {
@@ -73,8 +76,7 @@ function keyDown(e) {
 		// Prevent entire site from scrolling
 		e.preventDefault();	
 	
-		//divWidth	= parseInt(this.style.width.replace(/-[\D]+/, ''), 10);
-		divStartX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
+		divStartX	= parseInt(document.getElementById("container").style.left, 10);
 		
 		timer = setInterval("moveLeft(divStartX, wwidth)", 1);
 	
@@ -86,8 +88,7 @@ function keyDown(e) {
 		// Prevent entire site from scrolling
 		e.preventDefault();		
 	
-		//divWidth	= parseInt(this.style.width.replace(/-[\D]+/, ''), 10);
-		divStartX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
+		divStartX	= parseInt(document.getElementById("container").style.left, 10);
 	
 		timer = setInterval("moveRight(divStartX, wwidth)", 1);
 	
@@ -108,7 +109,7 @@ function keyUp(e) {
 
 function moveLeft(divStartX, windowWidth) {
 
-	divCurrentX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
+	divCurrentX	= parseInt(document.getElementById("container").style.left, 10);
 
 	if (divCurrentX > divStartX - windowWidth) {
 		
@@ -126,7 +127,7 @@ function moveLeft(divStartX, windowWidth) {
 
 function moveRight(divStartX, windowWidth) {
 
-	divCurrentX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
+	divCurrentX	= parseInt(document.getElementById("container").style.left, 10);
 
 	if (divCurrentX < divStartX + windowWidth) {
 		
@@ -145,7 +146,7 @@ function boxGrab(e) {
 	
 	mouseStartX = e.clientX + window.scrollX;
 	
-	divStartX	= parseInt(this.style.left.replace(/-[\D]+/, ''), 10);
+	divStartX	= parseInt(this.style.left, 10);
 	
 	this.addEventListener('mousemove', boxMove, false);
 	this.addEventListener('mouseup', boxRelease, false);
@@ -161,8 +162,8 @@ function boxMove(e) {
 	
 	mouseX 		= e.clientX + window.scrollX;
 	
-	divWidth	= parseInt(this.style.width.replace(/-[\D]+/, ''), 10);
-	divCurrentX	= parseInt(this.style.left.replace(/-[\D]+/, ''), 10);
+	divWidth	= parseInt(this.style.width, 10);
+	divCurrentX	= parseInt(this.style.left, 10);
 	
 	divX 			= (divStartX + mouseX - mouseStartX);
 	this.style.left = divX + "px";
