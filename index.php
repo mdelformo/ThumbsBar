@@ -31,7 +31,7 @@
 <!-- Style created in-line style to allow javascript to change it -->
 
 <div id="container" style="	position: absolute; height: 100px; left: 0px;
-		bottom: 0px;">
+		bottom: 0px;"">
 
 	<div id="imagebar"><div>
 

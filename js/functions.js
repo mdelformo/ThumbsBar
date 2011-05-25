@@ -1,6 +1,7 @@
 window.onload	= addListeners;
 
 var request;
+var timer;
 
 function createThumbsBar() {
 	
@@ -61,7 +62,10 @@ function addListeners() {
 
 function keyDown(e) {
 	
-	keyNum = (e.which);
+	keyNum 	= (e.which);
+	
+	// Does this work in all browsers?
+	wwidth	= window.innerWidth;
 
 	// Left arrow key
 	if (keyNum == 37) {
@@ -70,9 +74,9 @@ function keyDown(e) {
 		e.preventDefault();	
 	
 		//divWidth	= parseInt(this.style.width.replace(/-[\D]+/, ''), 10);
-		divCurrentX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
-		divX 		= divCurrentX -= 10;
-		document.getElementById("container").style.left = divX + "px";
+		divStartX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
+		
+		timer = setInterval("moveLeft(divStartX, wwidth)", 1);
 	
 	}
 
@@ -83,9 +87,9 @@ function keyDown(e) {
 		e.preventDefault();		
 	
 		//divWidth	= parseInt(this.style.width.replace(/-[\D]+/, ''), 10);
-		divCurrentX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
-		divX 		= divCurrentX += 10;
-		document.getElementById("container").style.left = divX + "px";
+		divStartX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
+	
+		timer = setInterval("moveRight(divStartX, wwidth)", 1);
 	
 	}
 
@@ -95,6 +99,43 @@ function keyUp(e) {
 
 	//alert('keyup');
 	//document.addEventListener('keydown', scrollThumbs, false);
+
+}
+
+
+// Triggered by left arrow keyboard button. Moves the thumbsbar the entire width
+// of the screen in an animation
+
+function moveLeft(divStartX, windowWidth) {
+
+	divCurrentX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
+
+	if (divCurrentX > divStartX - windowWidth) {
+		
+		divX 		= divCurrentX -= 20;
+		document.getElementById("container").style.left = divX + "px";
+
+	}
+	
+	else clearInterval(timer);
+
+}
+
+// Triggered by right arrow keyboard button. Moves the thumbsbar the entire width
+// of the screen in an animation
+
+function moveRight(divStartX, windowWidth) {
+
+	divCurrentX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
+
+	if (divCurrentX < divStartX + windowWidth) {
+		
+		divX 		= divCurrentX += 20;
+		document.getElementById("container").style.left = divX + "px";
+
+	}
+	
+	else clearInterval(timer);
 
 }
 
