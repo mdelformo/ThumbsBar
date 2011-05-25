@@ -100,13 +100,42 @@ class ThumbsBar {
 
 	public function getThumbs() {
 
-		$thumbsbar = new Imagick($this->dir . $this->filename);
+		$thumbsbar	= new Imagick($this->dir . $this->filename);
 		
-		// Temporary array to view thumbnail data
-		$filelist	= explode('|', $thumbsbar->getImageProperty('comment'));
-		$tmp		= implode('<br>', $filelist);
+		$thumbsdata	= explode('|', $thumbsbar->getImageProperty('comment'));
 		
-		return	'<img src=' . $this->dir . $this->filename . '></img>' . $tmp;
+		$output		= '';
+												
+		$output		.= 
+			
+			'<style type="text/css">
+		
+			#imagebar 		{ 	position: relative; }
+			#imagebar a		{ 	background-image: url(\'img/thumbsbar.jpg\');
+								display: block; float: left; height: 100px;
+								font-size: 18px;}
+	
+			</style>';
+
+		foreach($thumbsdata as $td) {
+		
+			$meta		= explode(',', $td);
+			
+			if (count($meta) == 3) {
+				
+				$td_name 	= $meta[0];
+				$td_x		= $meta[1];
+				$td_width	= $meta[2];
+
+				$output 	.= 	'<a 	style="background-position: -' . $td_x . 
+								'px 0px; width: ' . $td_width . ';"' . 
+								'href="img/' . $td_name . '"></a>';
+				
+			}
+
+		}
+		
+		return $output;
 		
 	}
 

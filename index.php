@@ -17,6 +17,8 @@
 
 <div id="progressbar"></div>
 
+<div id="imagebar"><div>
+
 </body>
 
 </html>
