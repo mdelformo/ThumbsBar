@@ -1,0 +1,6 @@
+ThumbsBar
+
+Extensible PHP-script to create a thumbnail file from chosen image 
+directory and read them back using dynamically created CSS sprites.
+
+Uses ImageMagick.
