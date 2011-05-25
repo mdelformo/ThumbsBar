@@ -104,6 +104,6 @@ function displayImage(image) {
 	
 	img 		= document.getElementById('mainimg');
 	//if (img.height < maxHeight)	img.height = maxHeight;
-	//img.src 	= image;
+	img.src 	= image;
 	
 }

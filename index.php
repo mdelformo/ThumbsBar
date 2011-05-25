@@ -23,7 +23,7 @@
 
 <div id="display">
 
-	<img id="mainimg" height="600">
+	<img id="mainimg" height="600" style="visibility: hidden;">
 
 </div>
 
