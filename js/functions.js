@@ -49,20 +49,54 @@ function showThumbsBar() {
 
 }	
 
-///// Event handling functions
+// Event handling functions
 
 function addListeners() {
 	
 	document.getElementById('container').addEventListener('mousedown', boxGrab, false);
-	// TODO
-	document.addEventListener('keydown', scrollThumbs, false);
+	document.addEventListener('keydown', keyDown, false);
 	document.addEventListener('keyup', keyUp, false);
 
 }
 
-function scrollThumbs(e) {}
-function keyUp(e) {}
+function keyDown(e) {
+	
+	keyNum = (e.which);
 
+	// Left arrow key
+	if (keyNum == 37) {
+	
+		// Prevent entire site from scrolling
+		e.preventDefault();	
+	
+		//divWidth	= parseInt(this.style.width.replace(/-[\D]+/, ''), 10);
+		divCurrentX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
+		divX 		= divCurrentX -= 10;
+		document.getElementById("container").style.left = divX + "px";
+	
+	}
+
+	// Right arrow key
+	if (keyNum == 39) {
+	
+		// Prevent entire site from scrolling
+		e.preventDefault();		
+	
+		//divWidth	= parseInt(this.style.width.replace(/-[\D]+/, ''), 10);
+		divCurrentX	= parseInt(document.getElementById("container").style.left.replace(/-[\D]+/, ''), 10);
+		divX 		= divCurrentX += 10;
+		document.getElementById("container").style.left = divX + "px";
+	
+	}
+
+}
+
+function keyUp(e) {
+
+	//alert('keyup');
+	//document.addEventListener('keydown', scrollThumbs, false);
+
+}
 
 function boxGrab(e) {
 
@@ -75,6 +109,7 @@ function boxGrab(e) {
 	this.addEventListener('mousemove', boxMove, false);
 	this.addEventListener('mouseup', boxRelease, false);
 	//this.addEventListener('mouseout', boxRelease, false);	
+	
 }
 
 function boxMove(e) {
