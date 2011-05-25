@@ -12,12 +12,30 @@
 
 <body>
 
-<button onclick="createThumbsBar()">Create thumbnails</button>
-<button onclick="showThumbsBar()">Show thumbnails</button>
+<div id="toolbar">
 
-<div id="progressbar"></div>
+	<button onclick="createThumbsBar()">Create thumbnails</button>
+	<button onclick="showThumbsBar()">Show thumbnails</button>
+	
+	<div id="progressbar"></div>
 
-<div id="imagebar"><div>
+</div>
+
+<div id="display">
+
+	<img id="mainimg" height="600">
+
+</div>
+
+
+<!-- Style created in-line style to allow javascript to change it -->
+
+<div id="container" style="	position: absolute; height: 100px; left: 0px;
+		bottom: 0px;">
+
+	<div id="imagebar"><div>
+
+</div>
 
 </body>
 

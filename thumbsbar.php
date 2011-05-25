@@ -110,10 +110,9 @@ class ThumbsBar {
 			
 			'<style type="text/css">
 		
-			#imagebar 		{ 	position: relative; }
+			#imagebar 		{ 	position: relative; background-color: pink; }
 			#imagebar a		{ 	background-image: url(\'img/thumbsbar.jpg\');
-								display: block; float: left; height: 100px;
-								font-size: 18px;}
+								display: block; position: absolute; height: 100px; }
 	
 			</style>';
 
@@ -127,9 +126,9 @@ class ThumbsBar {
 				$td_x		= $meta[1];
 				$td_width	= $meta[2];
 
-				$output 	.= 	'<a 	style="background-position: -' . $td_x . 
-								'px 0px; width: ' . $td_width . ';"' . 
-								'href="img/' . $td_name . '"></a>';
+				$output 	.= 	
+				'<a style="background-position: -' . $td_x . 'px 0px; width: ' . 
+					$td_width . '; left: ' . $td_x . 'px;" onmousedown=displayImage("img/' . $td_name . '");></a>';
 				
 			}
 

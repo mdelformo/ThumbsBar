@@ -1,12 +1,27 @@
 body {
 
 	padding:	0;
-	margin:		0;	
+	margin:		0;
+	overflow: 	hidden;
+	font-size: 12px;
 
 }
 
-img#thumbsbar {
+#toolbar {
 
-	
+	position: relative;
+	margin-left: auto; margin-right: auto;
+	height: 50px;
+	width: 340px;
 
+}
+
+button {
+	width: 150px;
+}
+
+img#mainimg {
+	display: block;
+	margin-left: auto; margin-right: auto;
+	margin-top: 40px;
 }
