@@ -128,7 +128,7 @@ class ThumbsBar {
 
 				$output 	.= 	
 				'<a style="background-position: -' . $td_x . 'px 0px; width: ' . 
-					$td_width . '; left: ' . $td_x . 'px;" onmousedown=displayImage("img/' . $td_name . '");></a>';
+					$td_width . 'px; left: ' . $td_x . 'px;" onmousedown=displayImage("img/' . $td_name . '");></a>';
 				
 			}
 
