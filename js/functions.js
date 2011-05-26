@@ -144,13 +144,23 @@ function moveLeft(divStartX, windowWidth) {
 	
 	divRightX	= divWidth + divX;
 	
-	document.getElementById('tmp').innerHTML = divRightX;
+	delta		= divRightX - windowWidth;
 
 	if ((divX > divStartX - windowWidth)  && (divRightX > windowWidth)) {
+		
+		if(delta > 10) {
 			
 			divX = divX -= 10;
 			document.getElementById("container").style.left = divX + "px";
-			document.getElementById('tmp').innerHTML = divRightX;
+		
+		}
+		
+		else {
+		
+			divX = divX -= delta;
+			document.getElementById("container").style.left = divX + "px";
+	
+		}
 		
 	}
 	
@@ -165,12 +175,24 @@ function moveRight(divStartX, windowWidth) {
 
 	divX	= parseInt(document.getElementById("container").style.left, 10);
 
+	delta	= -divX;
+
 	if ((divX < divStartX + windowWidth) && (divX < 0)) {
 		
-		divX = divX += 10;
-		document.getElementById("container").style.left = divX + "px";
-		document.getElementById('tmp').innerHTML = divRightX;
+		if (delta > 10) {
+			
+			divX = divX += 10;
+			document.getElementById("container").style.left = divX + "px";
 
+		}
+		
+		else {
+		
+			divX = divX += delta;
+			document.getElementById("container").style.left = divX + "px";
+		
+		}
+			
 	}
 	
 	else clearInterval(movetimer);

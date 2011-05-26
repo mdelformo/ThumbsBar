@@ -29,8 +29,6 @@
 
 </div>
 
-<div id="tmp">tmp</div>
-
 
 <!-- Style created in-line style to allow javascript to change it -->
 
