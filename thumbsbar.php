@@ -2,6 +2,8 @@
 
 $req;
 
+set_time_limit(120);		// Increase from default 30 to allow large folders
+
 if(isset($_GET['q'])) {
 
 	$req				= $_GET["q"];
@@ -9,7 +11,7 @@ if(isset($_GET['q'])) {
 	if ($req == "create") {
 
 		$folder = $_GET["folder"];
-		$tb		= new ThumbsBar($folder . "/");
+		$tb		= new ThumbsBar($folder . '/');
 	
 		$tb->createThumbs(200, 100);
 	
@@ -20,9 +22,9 @@ if(isset($_GET['q'])) {
 	if ($req == "show") {
 
 		$folder = $_GET["folder"];
-		$tb 	= new ThumbsBar($folder . "/");
+		$tb 	= new ThumbsBar($folder . '/');
 		
-		echo $tb->getThumbs();
+		echo $tb->getThumbs($folder . '/');
 
 	}
 
@@ -68,7 +70,6 @@ class ThumbsBar {
 		$thumbsbar = new Imagick();
 		$thumbsbar->newImage($total_width, $height, new ImagickPixel('black'));
 		$thumbsbar->setImageFormat('jpeg');
-		$thumbsbar->setImageProperty('comment', 'testing!');
 		
 		// thumbx tracks the position of each thumbnail in the new canvas image
 		// comment saves thumbnail data (filname, x, width)
@@ -107,7 +108,7 @@ class ThumbsBar {
 		
 	}
 
-	public function getThumbs() {
+	public function getThumbs($folder) {
 
 		$thumbsbar	= new Imagick($this->dir . $this->filename);
 		
@@ -119,13 +120,10 @@ class ThumbsBar {
 		
 		$output		.= 
 			'<style type="text/css">
-			
-			#container		{	width:' . $thumbsbar_width . 'px; }
-		
-			#imagebar 		{ 	position: relative; opacity: 0.1; }
-			#imagebar a		{ 	background-image: url(\'img/thumbsbar.jpg\');
-								display: block; position: absolute; height: 100px; }
-	
+				#container		{	width:' . $thumbsbar_width . 'px; }
+				#imagebar 		{ 	position: relative; opacity: 0.1; }
+				#imagebar a		{ 	background-image: url(\'' . $folder .'/thumbsbar.jpg\');
+									display: block; position: absolute; height: 100px; }
 			</style>';
 
 		foreach($thumbsdata as $td) {
@@ -140,7 +138,7 @@ class ThumbsBar {
 
 				$output 	.= 	
 				'<a style="background-position: -' . $td_x . 'px 0px; width: ' . 
-					$td_width . 'px; left: ' . $td_x. 'px;" onmousedown=displayImage("img/' . $td_name . '");></a>';
+					$td_width . 'px; left: ' . $td_x. 'px;" onmousedown=displayImage("' . $folder . $td_name . '");></a>';
 				
 			}
 
@@ -177,7 +175,7 @@ class ThumbsBar {
 
 	}
 	
-	    // Returns: An array of all folders in the current folder.
+	// Returns: An array of all folders in the current folder.
     static function getFolders($startFolder = './') {
         $ignoredFolder[] = '.';
         $ignoredFolder[] = '..';
