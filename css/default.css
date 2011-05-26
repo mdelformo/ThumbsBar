@@ -27,3 +27,19 @@ img#mainimg {
 	margin-top: 40px;
 	border: 10px solid black;
 }
+
+
+
+.navarrow {
+	text-decoration: none;
+	font-family: Courier, Arial;
+	font-size: 120px;
+	font-weight: 900;
+	color: #000000;
+	position: absolute;
+	display: inline;
+	padding: 0;
+	margin: 0;
+	bottom: 100px;
+	cursor: pointer;
+}

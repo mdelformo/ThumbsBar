@@ -25,4 +25,29 @@ img#mainimg {
 	display: block;
 	margin-left: auto; margin-right: auto;
 	margin-top: 40px;
+	border: 10px solid black;
 }
+
+
+
+.navarrow {
+	text-decoration: none;
+	font-family: Courier, Arial;
+	font-size: 120px;
+	font-weight: 900;
+	color: #000000;
+	position: absolute;
+	display: inline;
+	padding: 0;
+	margin: 0;
+	bottom: 100px;
+	cursor: pointer;
+}
+/*
+#leftarrow {
+	left: 10px;
+}
+
+#rightarrow {
+	right: 10px;
+}*/

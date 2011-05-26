@@ -32,6 +32,9 @@
 
 <!-- Style created in-line style to allow javascript to change it -->
 
+<a class="navarrow" id="leftarrow" onclick="initMoveLeft();" style="visibility: hidden; left: 10px;">&#60;</a> 
+<a class="navarrow" id="rightarrow" onclick="initMoveRight();" style="visibility: hidden; right: 10px;">&#62;</a>
+
 <div id="container" style="	position: absolute; height: 100px; left: 0px;
 		bottom: 0px;"">
 
@@ -42,3 +45,16 @@
 </body>
 
 </html>
+
+
+
+<!--
+
+<div id="navbar"></div>
+
+#navbar {
+
+	position: absolute;
+	height: 100px;
+
+}

@@ -1,9 +1,15 @@
 window.onload	= addListeners;
 
 var request;
-var timer;
+var movetimer; 
+
+//For fading in elements. Causes annoying flickering.
+var fadetimer;
+var opacity = 0.1;
 
 function createThumbsBar() {
+	
+	document.getElementById("progressbar").innerHTML = "Creating thumbnails..";
 	
 	if (window.XMLHttpRequest) request = new XMLHttpRequest();
 	
@@ -16,9 +22,6 @@ function createThumbsBar() {
 			document.getElementById("progressbar").innerHTML = request.responseText;
 	
 		}
-	
-		else document.getElementById("progressbar").innerHTML = "Creating thumbnails..";
- 	
  	
  	}
   	
@@ -38,6 +41,12 @@ function showThumbsBar() {
  		if (request.readyState==4 && request.status==200) {
 	
 			document.getElementById("imagebar").innerHTML = request.responseText;
+			document.getElementById("leftarrow").style.visibility = "visible";
+			document.getElementById("rightarrow").style.visibility = "visible";
+			
+			
+			imgb		= document.getElementById("imagebar");
+			fadetimer 	= setInterval("elementFadeIn(imgb)", 100);
 	
 		}
 	
@@ -64,18 +73,16 @@ function keyDown(e) {
 	
 	keyNum 	= (e.which);
 	
-	// Does this work in all browsers?
-	wwidth	= window.innerWidth;
+	// Kill current animation, if active
+	clearInterval(movetimer);
 
 	// Left arrow key
 	if (keyNum == 37) {
 	
 		// Prevent entire site from scrolling
-		e.preventDefault();	
-	
-		divStartX	= parseInt(document.getElementById("container").style.left, 10);
+		e.preventDefault();
 		
-		timer = setInterval("moveLeft(divStartX, wwidth)", 1);
+		initMoveLeft();
 	
 	}
 
@@ -85,9 +92,7 @@ function keyDown(e) {
 		// Prevent entire site from scrolling
 		e.preventDefault();		
 	
-		divStartX	= parseInt(document.getElementById("container").style.left, 10);
-	
-		timer = setInterval("moveRight(divStartX, wwidth)", 1);
+		initMoveRight();
 	
 	}
 
@@ -95,8 +100,29 @@ function keyDown(e) {
 
 function keyUp(e) {
 
-	//alert('keyup');
 	//document.addEventListener('keydown', scrollThumbs, false);
+
+}
+
+function initMoveLeft() {
+
+	// Does this work in all browsers?
+	wwidth		= window.innerWidth;
+	
+	divStartX	= parseInt(document.getElementById("container").style.left, 10);
+		
+	movetimer	= setInterval("moveLeft(divStartX, wwidth)", 1);
+
+}
+
+function initMoveRight() {
+
+	// Does this work in all browsers?
+	wwidth		= window.innerWidth;
+
+	divStartX	= parseInt(document.getElementById("container").style.left, 10);
+	
+	movetimer 	= setInterval("moveRight(divStartX, wwidth)", 1);
 
 }
 
@@ -115,7 +141,7 @@ function moveLeft(divStartX, windowWidth) {
 
 	}
 	
-	else clearInterval(timer);
+	else clearInterval(movetimer);
 
 }
 
@@ -133,7 +159,7 @@ function moveRight(divStartX, windowWidth) {
 
 	}
 	
-	else clearInterval(timer);
+	else clearInterval(movetimer);
 
 }
 
@@ -177,8 +203,27 @@ function boxRelease() {
 function displayImage(image) {
 	
 	img 		= document.getElementById('mainimg');
-	//if (img.height < maxHeight)	img.height = maxHeight;
-	img.style.visibility = "visible";
+	img.style.visibility	= "visible";
+	//img.style.opacity		= "0.1"
 	img.src 	= image;
 	
+	//fadetimer = setInterval("fadeImage(img)", 100);
+	
+}
+
+// To be called from the setInterval function
+// Causes flickering. Try to solve that..
+function elementFadeIn(element) {
+
+	if (opacity < 1.0) {
+	
+		opacity += 0.1;
+		element.style.opacity = opacity;
+	
+	} else { 
+		
+		clearInterval(fadetimer);
+		//opacity = 0.1;
+	
+	}
 }
