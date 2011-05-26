@@ -9,24 +9,34 @@ var opacity = 0.1;	// Initial opacity for the thumbsbar
 // Sends a GET request to server asking for a Thumbsbar to be created
 
 function createThumbsBar() {
+
+	var folderName = document.getElementById('folder_select').value;
+    
+    if (folderName) {
 	
-	document.getElementById("progressbar").innerHTML = "Creating thumbnails..";
+		document.getElementById("progressbar").innerHTML = "Creating thumbnails..";
 	
-	if (window.XMLHttpRequest) request = new XMLHttpRequest();
+		if (window.XMLHttpRequest) request = new XMLHttpRequest();
 	
-	request.open('GET', 'thumbsbar.php?q=create', true);
- 	
- 	request.onreadystatechange=function(){
- 	
- 		if (request.readyState==4 && request.status==200) {
+			request.open('GET', 'thumbsbar.php?q=create&folder='+folderName, true);
+		 	
+		 	request.onreadystatechange=function(){
+		 	
+		 	if (request.readyState==4 && request.status==200) {
 	
-			document.getElementById("progressbar").innerHTML = request.responseText;
+				document.getElementById("progressbar").innerHTML = request.responseText;
 	
-		}
- 	
- 	}
-  	
-  	request.send(null);
+			}
+	 	
+	 	}
+	  	
+	  	request.send(null);
+	  	
+	} else { 
+	
+		document.getElementById("progressbar").innerHTML = 'A folder must be selected';
+		
+	}
 	
 }
 
@@ -34,38 +44,48 @@ function createThumbsBar() {
 
 function showThumbsBar() {
 
-	if (window.XMLHttpRequest) request = new XMLHttpRequest();
-	
-	request.open('GET', 'thumbsbar.php?q=show', true);
- 	
- 	request.onreadystatechange=function(){
- 	
- 		if (request.readyState==4 && request.status==200) {
- 		
- 			// Since I can't seem to set the width value of 'container' from
- 			// php, parse the value from the request
- 		
- 			responseSplit = request.responseText.split("||");
-			
-			divWidth = parseInt(responseSplit[0], 10);
-			response = responseSplit[1];
-	
-			document.getElementById("imagebar").innerHTML = response;
-			document.getElementById("leftarrow").style.visibility = "visible";
-			document.getElementById("rightarrow").style.visibility = "visible";
-			
-			imgb		= document.getElementById("imagebar");
-			fadetimer 	= setInterval("elementFadeIn(imgb)", 50);
-	
-		}
-	
-		else document.getElementById("imagebar").innerHTML = "Loading thumbnails..";
- 	
- 	
- 	}
-  	
-  	request.send(null);
+    var folderName = document.getElementById('folder_select').value;
+    
+    if (folderName) {
 
+		if (window.XMLHttpRequest) request = new XMLHttpRequest();
+	
+			request.open('GET', 'thumbsbar.php?q=show&folder='+folderName, true);
+	 	
+	 		request.onreadystatechange=function(){
+	 	
+	 		if (request.readyState==4 && request.status==200) {
+	 		
+	 			// Since I can't seem to set the width value of 'container' from
+	 			// php, parse the value from the request
+	 		
+	 			responseSplit = request.responseText.split("||");
+			
+				divWidth = parseInt(responseSplit[0], 10);
+				response = responseSplit[1];
+	
+				document.getElementById("imagebar").innerHTML = response;
+				document.getElementById("leftarrow").style.visibility = "visible";
+				document.getElementById("rightarrow").style.visibility = "visible";
+			
+				imgb		= document.getElementById("imagebar");
+				fadetimer 	= setInterval("elementFadeIn(imgb)", 50);
+	
+			}
+	
+			else document.getElementById("imagebar").innerHTML = "Loading thumbnails..";
+	 	
+	 	
+	 	}
+	  	
+	  	request.send(null);
+
+	} else { 
+	
+		document.getElementById("progressbar").innerHTML = 'A folder must be selected';
+		
+	}
+	
 }	
 
 // Event handling functions
@@ -259,8 +279,7 @@ function displayImage(image) {
 	
 }
 
-// To be called from the setInterval function
-// Causes flickering. Try to solve that..
+// Fades in the thumbsbar on init 
 function elementFadeIn(element) {
 
 	if (opacity < 1.0) {

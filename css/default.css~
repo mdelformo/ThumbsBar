@@ -43,11 +43,3 @@ img#mainimg {
 	bottom: 100px;
 	cursor: pointer;
 }
-/*
-#leftarrow {
-	left: 10px;
-}
-
-#rightarrow {
-	right: 10px;
-}*/

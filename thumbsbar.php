@@ -1,23 +1,32 @@
 <?php
 
-$req				= $_GET["q"];
+$req;
 
-if ($req == "create") {
+if(isset($_GET['q'])) {
 
-	$tb = new ThumbsBar();
-	$tb->createThumbs(200, 100);
+	$req				= $_GET["q"];
+
+	if ($req == "create") {
+
+		$folder = $_GET["folder"];
+		$tb		= new ThumbsBar($folder . "/");
 	
-	echo "Thumbnails created";
+		$tb->createThumbs(200, 100);
+	
+		echo "Thumbnails created";
 		
+	}
+
+	if ($req == "show") {
+
+		$folder = $_GET["folder"];
+		$tb 	= new ThumbsBar($folder . "/");
+		
+		echo $tb->getThumbs();
+
+	}
+
 }
-
-if ($req == "show") {
-
-	$tb = new ThumbsBar();
-	echo $tb->getThumbs();
-
-}
-
 
 class ThumbsBar {
 
@@ -25,7 +34,7 @@ class ThumbsBar {
 	private $filename;
 	private $files;
 
-	function ThumbsBar($dir = 'img/', $filename = 'thumbsbar.jpg') {
+	function ThumbsBar($dir, $filename = 'thumbsbar.jpg') {
 
 		$this->dir 		= $dir;
 		$this->filename	= $filename;
@@ -148,7 +157,7 @@ class ThumbsBar {
 
 		foreach ($dir as $file) {
 
-			if ($this->isImage($file) && $file != 'thumbsbar.jpg') {
+			if (ThumbsBar::isImage($file) && $file != 'thumbsbar.jpg') {
 			
 				$img_files[] = $file;
 				
@@ -160,14 +169,101 @@ class ThumbsBar {
 
 	}
 	
-	private function isImage($file) {
+	private static function isImage($file) {
 		
 		// \z = is last in string, /i = ignore case
 		if (preg_match('/jpg|jpeg|png|gif\z/i', $file)) return true;
 		else return false;
 
 	}
+	
+	    // Returns: An array of all folders in the current folder.
+    static function getFolders($startFolder = './') {
+        $ignoredFolder[] = '.';
+        $ignoredFolder[] = '..';
+        if (is_dir($startFolder)) {
+            if ($folderHandle = opendir($startFolder)) {
+                while (($folder = readdir($folderHandle)) !== false) {
+                    if (!(array_search($folder, $ignoredFolder) > -1)) {
+                        if (filetype($startFolder . $folder) == "dir") {
+                            $folders[] = $folder;
+                        }
+                    }
+                }
+                closedir($folderHandle);
+            }
+        }
+        return($folders);
+    }
+
+    // Parameter: A list of folders that can contain images relative to the current directory.
+    // Returns: A list of the folders that contains images.
+    static function getImageFolders() {
+ 
+        $folders = ThumbsBar::getFolders();
+ 
+        foreach ($folders as $folder) {
+    
+            $folderFiles = ThumbsBar::getFolderFiles($folder);
+          
+            foreach ($folderFiles as $folderFile) {
+              
+                if (ThumbsBar::isImage($folderFile)) {
+                   
+                    $imageFolders[] = $folder;
+                    break;
+                    
+                }
+           
+            }
+       
+        }
+        
+        return $imageFolders;
+    
+    }
+
+    // Parameter folder: array with folder names.
+    // Parameter recursive: if files in sub folders should be added as well.
+    // Returns: An array with files in the folder and possibly in the subfolders.
+    static function getFolderFiles($folder, $recursive = false) {
+        
+        $files = array();
+        
+        if ($handle = opendir($folder)) {
+            
+            while (false !== ($file = readdir($handle))) {
+               
+                if ($file != "." && $file != "..") {
+                   
+                    if (is_dir($folder . "/" . $file)) {
+                     
+                        if ($recursive) {
+                         
+                            $files = array_merge($files, directoryToArray($folder . "/" . $file, $recursive));
+                        
+                        }
+                       
+                        $file = $folder . "/" . $file;
+                        $files[] = preg_replace("/\/\//si", "/", $file);
+                    
+                    } else {
+                       
+                        $file = $folder . "/" . $file;
+                        
+                        $files[] = preg_replace("/\/\//si", "/", $file);
+                    }
+                
+                }
+            
+            }
+            
+            closedir($handle);
+        
+        }
+       
+        return $files;
+    }
 
 }
-
 ?>
