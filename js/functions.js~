@@ -1,12 +1,12 @@
 window.onload	= addListeners;
 
-var request;
-var movetimer;
-var divWidth; 
+var request;		// Ajax request sent to thumbsbar.php
+var movetimer;		// Timer used for animation of the thumbsbar container
+var fadetimer;		// Timer used for fading in the thumbsbar
+var divWidth; 		// Width of thumbsbar container
+var opacity = 0.1;	// Initial opacity for the thumbsbar
 
-//For fading in elements. Causes annoying flickering.
-var fadetimer;
-var opacity = 0.1;
+// Sends a GET request to server asking for a Thumbsbar to be created
 
 function createThumbsBar() {
 	
@@ -30,6 +30,7 @@ function createThumbsBar() {
 	
 }
 
+// Sends a GET request to server asking to show the thumbsbar
 
 function showThumbsBar() {
 
@@ -81,24 +82,19 @@ function keyDown(e) {
 	
 	keyNum 	= (e.which);
 	
-	// Kill current animation, if active
-	clearInterval(movetimer);
+	clearInterval(movetimer);	// Kill current animation, if active
 
-	// Left arrow key
-	if (keyNum == 37) {
+	if (keyNum == 37) {			// Left arrow key
 	
-		// Prevent entire site from scrolling
-		e.preventDefault();
+		e.preventDefault();		// Prevent entire page from scrolling
 		
 		initMoveLeft();
 	
 	}
 
-	// Right arrow key
-	if (keyNum == 39) {
+	if (keyNum == 39) {			// Right arrow key
 	
-		// Prevent entire site from scrolling
-		e.preventDefault();		
+		e.preventDefault();		// Prevent entire page from scrolling
 	
 		initMoveRight();
 	
@@ -114,8 +110,7 @@ function keyUp(e) {
 
 function initMoveLeft() {
 
-	// Does this work in all browsers?
-	wwidth		= window.innerWidth;
+	wwidth		= window.innerWidth;	// Does this work in all browsers?
 	
 	divStartX	= parseInt(document.getElementById("container").style.left, 10);
 		
@@ -125,8 +120,7 @@ function initMoveLeft() {
 
 function initMoveRight() {
 
-	// Does this work in all browsers?
-	wwidth		= window.innerWidth;
+	wwidth		= window.innerWidth;	// Does this work in all browsers?
 
 	divStartX	= parseInt(document.getElementById("container").style.left, 10);
 	
@@ -145,8 +139,6 @@ function moveLeft(divStartX, windowWidth) {
 	divRightX	= divWidth + divX;
 	
 	delta		= divRightX - windowWidth;
-	
-	document.getElementById('tmp').innerHTML = divRightX;
 
 	if ((divX > divStartX - windowWidth)  && (divRightX > windowWidth)) {
 		
@@ -211,18 +203,17 @@ function boxGrab(e) {
 	
 	this.addEventListener('mousemove', boxMove, false);
 	this.addEventListener('mouseup', boxRelease, false);
-	//this.addEventListener('mouseout', boxRelease, false);	
+	this.addEventListener('mouseout', boxRelease, false);	
 	
 }
 
 function boxMove(e) {
 
-	// METHOD TO DRAG THUMBSBAR // NOT FINNISHED YET
+	// Drags the thumbsbar by mouse movement
 
 	e.preventDefault();
 	
-	// Does this work in all browsers?
-	wwidth		= window.innerWidth;
+	wwidth		= window.innerWidth;	// Does this work in all browsers?
 	
 	mouseX 		= e.clientX + window.scrollX;
 
