@@ -1,7 +1,8 @@
 window.onload	= addListeners;
 
 var request;
-var movetimer; 
+var movetimer;
+var divWidth; 
 
 //For fading in elements. Causes annoying flickering.
 var fadetimer;
@@ -39,14 +40,21 @@ function showThumbsBar() {
  	request.onreadystatechange=function(){
  	
  		if (request.readyState==4 && request.status==200) {
+ 		
+ 			// Since I can't seem to set the width value of 'container' from
+ 			// php, parse the value from the request
+ 		
+ 			responseSplit = request.responseText.split("||");
+			
+			divWidth = parseInt(responseSplit[0], 10);
+			response = responseSplit[1];
 	
-			document.getElementById("imagebar").innerHTML = request.responseText;
+			document.getElementById("imagebar").innerHTML = response;
 			document.getElementById("leftarrow").style.visibility = "visible";
 			document.getElementById("rightarrow").style.visibility = "visible";
 			
-			
 			imgb		= document.getElementById("imagebar");
-			fadetimer 	= setInterval("elementFadeIn(imgb)", 100);
+			fadetimer 	= setInterval("elementFadeIn(imgb)", 50);
 	
 		}
 	
@@ -111,7 +119,7 @@ function initMoveLeft() {
 	
 	divStartX	= parseInt(document.getElementById("container").style.left, 10);
 		
-	movetimer	= setInterval("moveLeft(divStartX, wwidth)", 1);
+	movetimer	= setInterval("moveLeft(divStartX, wwidth)", 10);
 
 }
 
@@ -122,7 +130,7 @@ function initMoveRight() {
 
 	divStartX	= parseInt(document.getElementById("container").style.left, 10);
 	
-	movetimer 	= setInterval("moveRight(divStartX, wwidth)", 1);
+	movetimer 	= setInterval("moveRight(divStartX, wwidth)", 10);
 
 }
 
@@ -132,13 +140,18 @@ function initMoveRight() {
 
 function moveLeft(divStartX, windowWidth) {
 
-	divCurrentX	= parseInt(document.getElementById("container").style.left, 10);
+	divX		= parseInt(document.getElementById("container").style.left, 10);
+	
+	divRightX	= divWidth + divX;
+	
+	document.getElementById('tmp').innerHTML = divRightX;
 
-	if (divCurrentX > divStartX - windowWidth) {
+	if ((divX > divStartX - windowWidth)  && (divRightX > windowWidth)) {
+			
+			divX = divX -= 10;
+			document.getElementById("container").style.left = divX + "px";
+			document.getElementById('tmp').innerHTML = divRightX;
 		
-		divX 		= divCurrentX -= 20;
-		document.getElementById("container").style.left = divX + "px";
-
 	}
 	
 	else clearInterval(movetimer);
@@ -150,12 +163,13 @@ function moveLeft(divStartX, windowWidth) {
 
 function moveRight(divStartX, windowWidth) {
 
-	divCurrentX	= parseInt(document.getElementById("container").style.left, 10);
+	divX	= parseInt(document.getElementById("container").style.left, 10);
 
-	if (divCurrentX < divStartX + windowWidth) {
+	if ((divCurrentX < divStartX + windowWidth) && (divX < 0)) {
 		
-		divX 		= divCurrentX += 20;
+		divX = divX += 10;
 		document.getElementById("container").style.left = divX + "px";
+		document.getElementById('tmp').innerHTML = divRightX;
 
 	}
 	
@@ -183,13 +197,32 @@ function boxMove(e) {
 
 	e.preventDefault();
 	
-	mouseX 		= e.clientX + window.scrollX;
+	// Does this work in all browsers?
+	wwidth		= window.innerWidth;
 	
-	divWidth	= parseInt(this.style.width, 10);
+	mouseX 		= e.clientX + window.scrollX;
+
 	divCurrentX	= parseInt(this.style.left, 10);
 	
 	divX 			= (divStartX + mouseX - mouseStartX);
-	this.style.left = divX + "px";
+	
+	divRightX		= divX + divWidth;
+	
+	if (divWidth < wwidth) {
+	
+		if (divX >= 0 && divRightX <= wwidth) {
+		
+			this.style.left = divX + "px";		
+		
+		}
+	
+	}
+	
+	else if (divX < 1 && divRightX >= wwidth) {
+		
+		this.style.left = divX + "px";
+	
+	}
 
 }
 

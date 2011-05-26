@@ -1,6 +1,6 @@
 <?php
 
-$req	= $_GET["q"];
+$req				= $_GET["q"];
 
 if ($req == "create") {
 
@@ -102,13 +102,16 @@ class ThumbsBar {
 
 		$thumbsbar	= new Imagick($this->dir . $this->filename);
 		
+		$thumbsbar_width = $thumbsbar->getImageWidth();
+		
 		$thumbsdata	= explode('|', $thumbsbar->getImageProperty('comment'));
 		
-		$output		= '';
-												
+		$output		= $thumbsbar_width . '||';
+		
 		$output		.= 
-			
 			'<style type="text/css">
+			
+			#container		{	width:' . $thumbsbar_width . 'px; }
 		
 			#imagebar 		{ 	position: relative; opacity: 0.1; }
 			#imagebar a		{ 	background-image: url(\'img/thumbsbar.jpg\');
