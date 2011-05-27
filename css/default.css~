@@ -9,28 +9,33 @@ body {
 
 #toolbar {
 
-	position: relative;
-	margin-left: auto; margin-right: auto;
-	margin-top: 20px;
-	height: 50px;
-	width: 340px;
+	position: absolute;
+	left: 40px;
+	top: 80px;
+	border: 10px solid black;
+	border-radius: 15px;
+	padding: 10px;
+	height: 200px;
+	width: 200px;
 
 }
 
-button {
+button, select {
+
 	width: 150px;
+	margin-left: auto; margin-right: auto;
 }
 
 img#mainimg {
+
 	display: block;
 	margin-left: auto; margin-right: auto;
 	margin-top: 40px;
 	border: 10px solid black;
 }
 
-
-
 .navarrow {
+
 	text-decoration: none;
 	font-family: Courier, Arial;
 	font-size: 120px;
@@ -42,4 +47,5 @@ img#mainimg {
 	margin: 0;
 	bottom: 100px;
 	cursor: pointer;
+	
 }

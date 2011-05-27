@@ -18,26 +18,27 @@
 
 <div id="folder_chooser">
 
-    <select id="folder_select">
-    
-        <option value="" selected="selected">Choose folder</option>
-       
-        <?php
-        
-        $imageFolders = ThumbsBar::getImageFolders();
-        foreach ($imageFolders as $imageFolder) {
-            
-            echo '<option>' . $imageFolder . '</option>';
-        } ?>
-        
-    </select>
+
     
 </div>
 
 <div id="toolbar">
 
-	<button onclick="createThumbsBar()">Create thumbnails</button>
-	<button onclick="showThumbsBar()">Show thumbnails</button>
+    <select id="folder_select">
+    
+        <option value="" selected="selected">Choose folder</option>
+       
+        <?php
+           	$imageFolders = ThumbsBar::getImageFolders();
+        	foreach ($imageFolders as $imageFolder) {
+            	echo '<option>' . $imageFolder . '</option>';
+        	}
+        ?>
+        
+    </select>
+
+	<button id="bcreate" onclick="createThumbsBar()">Create thumbnails</button>
+	<button id="bshow" onclick="showThumbsBar()">Show thumbnails</button>
 	
 	<div id="progressbar"></div>
 
