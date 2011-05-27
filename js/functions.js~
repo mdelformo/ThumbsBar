@@ -2,11 +2,10 @@ window.onload	= addListeners;
 
 var request;		// Ajax request sent to thumbsbar.php
 var movetimer;		// Timer used for animation of the thumbsbar container
-var fadeintimer;	// Timer used for fading in the thumbsbar
-var fadeouttimer;	// Timer used for fading out the thumbsbar
+var fadetimer;		// Timer used for fading in/out the thumbsbar
 var divWidth; 		// Width of thumbsbar container
-var opacity;		// Initial opacity for the thumbsbar
-var lastreponse; 
+var opacity = 0.0;	// Initial opacity for the thumbsbar and mainimage
+var lastreponse; 	// Keep track of the previous response
 
 // Sends a GET request to server asking for a Thumbsbar to be created
 
@@ -52,10 +51,10 @@ function showThumbsBar() {
 
 		if (window.XMLHttpRequest) request = new XMLHttpRequest();
 	
-			request.open('GET', 'thumbsbar.php?q=show&folder='+folderName, true);
+		request.open('GET', 'thumbsbar.php?q=show&folder='+folderName, true);
 	 	
-	 		request.onreadystatechange=function(){
-	 	
+ 		request.onreadystatechange=function(){
+ 	
 	 		if (request.readyState==4 && request.status==200) {
 	 		
 	 			// Since I can't seem to set the width value of 'container' from
@@ -63,39 +62,44 @@ function showThumbsBar() {
 	 		
 	 			responseSplit 	= request.responseText.split("||");
 				divWidth 		= parseInt(responseSplit[0], 10);
-				response 		= responseSplit[1];
-				
+				firstImage		= responseSplit[1];
+				response 		= responseSplit[2];
+			
+				imgm 		= document.getElementById('mainimg');
 				imgb		= document.getElementById('imagebar');
-				
+			
 				// Fade in if arrow isn't visible (i.e. first time), else fade out/in
 				// Fade out automatically calls fade in when finnished
-				
+			
 				if (document.getElementById('leftarrow').style.visibility == 'hidden') {
 
 					document.getElementById("imagebar").innerHTML = response;
-					opacity			= 0.0;
-					fadeintimer		= setInterval(function() { elementFadeIn(imgb) }, 50);
+					fadetimer			= setInterval(function() { elementFadeIn(imgb) }, 50);
 				
-				} else { 
-				
-					opacity			= 1.0;
-					// elementFadeOut updates the imagebar with new response when faded out
-					fadeouttimer 	= setInterval(function() { elementFadeOut(imgb, response) }, 50);
+					document.getElementById("leftarrow").style.visibility = "visible";
+					document.getElementById("rightarrow").style.visibility = "visible";
 					
+					displayImage(firstImage);
+				
+			
+				} else { 
+			
+					// elementFadeOut updates the imagebar with new response when faded out
+					document.getElementById("imagebar").innerHTML = lastresponse;
+					opacity 	= 1.0;
+					fadetimer 	= setInterval(function() { elementFadeOut(imgb, firstImage, response) }, 50);
+
 				}
-				
-				document.getElementById("leftarrow").style.visibility = "visible";
-				document.getElementById("rightarrow").style.visibility = "visible";
-				
+			
 				// Save last response for using in imagebar while fading out
-				lastresponse = response;
-	
-			}
-	
-			else document.getElementById("imagebar").innerHTML = lastresponse;
-	 	
-	 	
-	 	}
+				lastresponse	= response;
+
+			} else { 
+		
+				document.getElementById("imagebar").innerHTML 	= lastresponse;
+ 			}
+ 	
+ 		}
 	  	
 	  	request.send(null);
 
@@ -122,7 +126,7 @@ function keyDown(e) {
 	
 	clearInterval(movetimer);	// Kill current animation, if active
 
-	if (keyNum == 37) {			// Left arrow key
+	if (keyNum == 39) {			// Right arrow key - moves thumbsbar to the LEFT
 	
 		e.preventDefault();		// Prevent entire page from scrolling
 		
@@ -130,7 +134,7 @@ function keyDown(e) {
 	
 	}
 
-	if (keyNum == 39) {			// Right arrow key
+	if (keyNum == 37) {			// Left arrow key - moves thumbsbar to the RIGHT
 	
 		e.preventDefault();		// Prevent entire page from scrolling
 	
@@ -282,43 +286,48 @@ function boxRelease() {
 
 function displayImage(image) {
 	
-	img 		= document.getElementById('mainimg');
+	img 					= document.getElementById('mainimg');
 	img.style.visibility	= "visible";
-	img.src 	= image;
+	img.src 				= image;
 	
 }
 
-// Fades in the thumbsbar on init 
-function elementFadeIn(element) {
+// Fades in the thumbsbar and sets a new main image
+function elementFadeIn(element, img) {
 
 	if (opacity < 1.0) {
-	
+
 		opacity += 0.1;
 		element.style.opacity = opacity;
-		console.log("in: " + opacity);
-	
+
 	} else { 
+
+		clearInterval(fadetimer);
+		opacity 	= 0.0;
+		//document.getElementById('mainimg').src = img;
 		
-		clearInterval(fadeintimer);
-		opacity = 0.0;
-	
 	}
+	
 }
 
-function elementFadeOut(element, response) {
+function elementFadeOut(element, img, response) {
 
 	if (opacity > 0.0) {
 	
 		opacity -= 0.1;
 		element.style.opacity = opacity;
-		console.log("out: " + opacity);
-	
+
 	} else { 
-		
-		clearInterval(fadeouttimer);
-		document.getElementById("imagebar").innerHTML = response;
-		document.getElementById("container").style.left = "0px";
-		fadeintimer		= setInterval(function() { elementFadeIn(element) }, 50);
 	
+		clearInterval(fadetimer);
+		document.getElementById("imagebar").innerHTML = response;
+		document.getElementById("mainimg").src = img;
+		document.getElementById("container").style.left = "0px";
+		
+		imgm 		= document.getElementById('mainimg');
+		imgb		= document.getElementById('imagebar');
+		fadetimer 	= setInterval(function() { elementFadeIn(imgb) }, 50);
+
 	}
+	
 }

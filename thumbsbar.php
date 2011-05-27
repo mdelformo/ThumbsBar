@@ -83,7 +83,7 @@ class ThumbsBar {
 			
 			$thumb_width = $thumb->getImageWidth();
 			
-			$comment .= $thumb->getFileName() . ',' . $thumbx . ',' . $thumb_width . '|';
+			$comment .= rawurlencode($thumb->getFileName()) . ',' . $thumbx . ',' . $thumb_width . '||';
 			
 			$thumbsbar->compositeImage($thumb, imagick::COMPOSITE_OVER, $thumbx, 0);
 			
@@ -114,9 +114,20 @@ class ThumbsBar {
 		
 		$thumbsbar_width = $thumbsbar->getImageWidth();
 		
-		$thumbsdata	= explode('|', $thumbsbar->getImageProperty('comment'));
+		$thumbsdata	= explode('||', $thumbsbar->getImageProperty('comment'));
 		
-		$output		= $thumbsbar_width . '||';
+		// Below line doesn't work since 'only variables should be passed as reference'
+		// Rewrote it to 2 lines instead. Stupid PHP.
+		// $firstImage = reset(explode(',', $thumbsdata[0]));
+		
+		$tmp		= explode(',', $thumbsdata[0]);
+		$firstImage = reset($tmp);
+		
+		$output		= 	$thumbsbar_width . '||';
+		// Get the first element of the array, i.e. the first image url
+		// This is used to display the first image directly when the thumbsbar
+		// is shown
+		$output		.=	$folder . $firstImage . '||';
 		
 		$output		.= 
 			'<style type="text/css">
