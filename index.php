@@ -37,8 +37,13 @@
         
     </select>
 
-	<button id="bcreate" onclick="createThumbsBar()">Create thumbnails</button>
-	<button id="bshow" onclick="showThumbsBar()">Show thumbnails</button>
+	<br><br>
+
+	<p>	<a onclick="createThumbsBar()">Create thumbnails</a><br><br>
+		<a onclick="showThumbsBar()">Show thumbnails</a></p>
+
+<!-- <button id="bcreate" onclick="createThumbsBar()">Create thumbnails</button>
+	 <button id="bshow" onclick="showThumbsBar()">Show thumbnails</button> -->
 	
 	<div id="progressbar"></div>
 
