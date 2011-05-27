@@ -6,6 +6,7 @@ var fadetimer;		// Timer used for fading in/out the thumbsbar
 var divWidth; 		// Width of thumbsbar container
 var opacity = 0.0;	// Initial opacity for the thumbsbar and mainimage
 var lastreponse; 	// Keep track of the previous response
+var firstImage;
 
 // Sends a GET request to server asking for a Thumbsbar to be created
 
@@ -64,9 +65,7 @@ function showThumbsBar() {
 				divWidth 		= parseInt(responseSplit[0], 10);
 				firstImage		= responseSplit[1];
 				response 		= responseSplit[2];
-			
-				imgm 		= document.getElementById('mainimg');
-				imgb		= document.getElementById('imagebar');
+				imgb			= document.getElementById('imagebar');
 			
 				// Fade in if arrow isn't visible (i.e. first time), else fade out/in
 				// Fade out automatically calls fade in when finnished
@@ -74,12 +73,10 @@ function showThumbsBar() {
 				if (document.getElementById('leftarrow').style.visibility == 'hidden') {
 
 					document.getElementById("imagebar").innerHTML = response;
-					fadetimer			= setInterval(function() { elementFadeIn(imgb) }, 50);
+					fadetimer			= setInterval(function() { elementFadeIn(imgb, firstImage) }, 50);
 				
 					document.getElementById("leftarrow").style.visibility = "visible";
 					document.getElementById("rightarrow").style.visibility = "visible";
-					
-					displayImage(firstImage);
 				
 			
 				} else { 
@@ -304,7 +301,7 @@ function elementFadeIn(element, img) {
 
 		clearInterval(fadetimer);
 		opacity 	= 0.0;
-		//document.getElementById('mainimg').src = img;
+		displayImage(img);
 		
 	}
 	
@@ -321,12 +318,9 @@ function elementFadeOut(element, img, response) {
 	
 		clearInterval(fadetimer);
 		document.getElementById("imagebar").innerHTML = response;
-		document.getElementById("mainimg").src = img;
 		document.getElementById("container").style.left = "0px";
-		
-		imgm 		= document.getElementById('mainimg');
 		imgb		= document.getElementById('imagebar');
-		fadetimer 	= setInterval(function() { elementFadeIn(imgb) }, 50);
+		fadetimer 	= setInterval(function() { elementFadeIn(imgb, firstImage) }, 50);
 
 	}
 	
