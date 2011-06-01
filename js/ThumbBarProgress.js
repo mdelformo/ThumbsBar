@@ -2,20 +2,24 @@ function ThumbBarProgress (outputDiv) {
     var _outputDiv = outputDiv;
     var _ajaxRequest;
     var _interval;
-    var _isFinishedProgressing;
+    var _isFinishedProgressing = true;
+
+    if (!window.XMLHttpRequest) {
+        throw new Error("XMLHttpRequest not supported");
+    }
 
     this.ajaxReturn = function () {
         if (_ajaxRequest && _ajaxRequest.readyState==4) {
             var ajaxCallSuccessful = _ajaxRequest.status==200;
             if (ajaxCallSuccessful) {
                 var response = _ajaxRequest.responseText;
-                _outputDiv.innerHTML = handleResponse(response);
+                _outputDiv.innerHTML = thumbBarProgress.handleResponse(response);
             } else {
                 _outputDiv.innerHTML= 'Ajax error';
                 _isFinishedProgressing = true;
             }
             if (_isFinishedProgressing) {
-                endInterval();
+                thumbBarProgress.endInterval();
             }
         }
     }
@@ -46,21 +50,21 @@ function ThumbBarProgress (outputDiv) {
     this.endInterval = function() {
         if (_interval){
             clearInterval(_interval);
-            endAjaxRequest();
+            this.endAjaxRequest();
         }
     }
     
     this.startInterval = function() {
         if (_isFinishedProgressing) {
-            _interval = setInterval("startAjaxRequest();",500);
+            _interval = setInterval("thumbBarProgress.startAjaxRequest();",500);
         }
     }
 
     this.startAjaxRequest = function() {
-        endAjaxRequest();
+        this.endAjaxRequest();
         _ajaxRequest = new XMLHttpRequest();
         _ajaxRequest.open('GET', 'thumbsbar.php?q=progress', true);
-        _ajaxRequest.onreadystatechange = ajaxReturn; 
+        _ajaxRequest.onreadystatechange = this.ajaxReturn; 
         _ajaxRequest.send(null);	
     }
 
@@ -72,18 +76,11 @@ function ThumbBarProgress (outputDiv) {
         _isFinishedProgressing = true;
     }
     
-    function ThumbBarProgress(outputDiv) {
-        if (window.XMLHttpRequest) {
-            _outputDiv = outputDiv;
-            _isFinishedProgressing = true;
-        } else {
-            throw new Error("XMLHttpRequest not supported");
-        }
-    }
-
 }
 
+var thumbBarProgress;
+
 function startRequestInterval() {
-    var thumbBarProgress = new ThumbBarProgress(document.getElementById('progressbar2'));
+    thumbBarProgress = new ThumbBarProgress(document.getElementById('progressbar2'));
     thumbBarProgress.startInterval();
 }
