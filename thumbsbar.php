@@ -1,5 +1,6 @@
 <?php
-
+session_start();
+ThumbsBar::createSessionInDatabase();
 $req;
 
 set_time_limit(120);		// Increase from default 30 to allow large folders
@@ -27,6 +28,13 @@ if(isset($_GET['q'])) {
 		echo $tb->getThumbs($folder . '/');
 
 	}
+        
+        if ($req === "progress") {
+//            print ThumbsBar::initializeDatabase();
+//            print ThumbsBar::createSessionInDatabase();
+            //print ThumbsBar::setProgressInDatabase(9, 10);
+            ThumbsBar::getProgressFromDatabase();
+        }
 
 }
 
@@ -43,7 +51,48 @@ class ThumbsBar {
 		$this->files	= $this->getImages($this->dir);
 		
 	}
+        
+        public static function initializeDatabase() {
+            $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
+            if ($con) { 
+                if (mysql_query("CREATE DATABASE IF NOT EXISTS thumbsbar",$con))
+                  {
+                    if (mysql_select_db('thumbsbar', $con)) {
+                        $sql="DROP TABLE IF EXISTS progress";
+                        mysql_query($sql);
+                        $sql = "CREATE TABLE progress (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, starttime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, session VARCHAR(100) NOT NULL, current_thumb INT NOT NULL DEFAULT 0, total_thumbs INT NOT NULL DEFAULT 0, UNIQUE KEY secondary (session)) ENGINE = MyISAM;";
+                        mysql_query($sql);
+                        }
+                  }
+                mysql_close($con);    
+            }
+        }
 
+        public static function setProgressInDatabase($file_number, $total_files) {
+            $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
+            if ($con) { 
+                $sql = "UPDATE thumbsbar.progress SET current_thumb='".$file_number."', total_thumbs='".$total_files."' WHERE session='".session_id()."';";
+                mysql_query($sql);
+            }
+        }
+        
+        public static function createSessionInDatabase() {
+            $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
+            if ($con) { 
+                $sql = "INSERT INTO thumbsbar.progress (session) VALUES ('".session_id()."') ON DUPLICATE KEY UPDATE starttime=CURRENT_TIMESTAMP;";
+                mysql_query($sql);
+            }
+        }
+        
+        public static function getProgressFromDatabase() {
+            $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
+            if ($con) {
+                $sql = "SELECT * FROM thumbsbar.progress  WHERE session='".session_id()."';";
+                $result = mysql_query($sql);
+                $row=mysql_fetch_assoc($result);
+            }
+        }
+        
 	public function createThumbs($width, $height) {
 		
 		$total_width 	= 0;

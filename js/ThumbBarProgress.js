@@ -82,5 +82,6 @@ var thumbBarProgress;
 
 function startRequestInterval() {
     thumbBarProgress = new ThumbBarProgress(document.getElementById('progressbar2'));
-    thumbBarProgress.startInterval();
+    //thumbBarProgress.startInterval();
+    thumbBarProgress.startAjaxRequest();
 }
