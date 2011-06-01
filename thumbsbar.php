@@ -1,5 +1,8 @@
 <?php
 session_start();
+$session_id = session_id();
+session_write_close();
+
 ThumbsBar::createSessionInDatabase();
 $req;
 
@@ -33,7 +36,7 @@ if(isset($_GET['q'])) {
 //            print ThumbsBar::initializeDatabase();
 //            print ThumbsBar::createSessionInDatabase();
             //print ThumbsBar::setProgressInDatabase(9, 10);
-            ThumbsBar::getProgressFromDatabase();
+            print ThumbsBar::getProgressFromDatabase();
         }
 
 }
@@ -71,15 +74,16 @@ class ThumbsBar {
         public static function setProgressInDatabase($file_number, $total_files) {
             $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
             if ($con) { 
-                $sql = "UPDATE thumbsbar.progress SET current_thumb='".$file_number."', total_thumbs='".$total_files."' WHERE session='".session_id()."';";
+                $sql = "UPDATE thumbsbar.progress SET current_thumb='".$file_number."', total_thumbs='".$total_files."' WHERE session='".$session_id."';";
                 mysql_query($sql);
             }
+            usleep(100);
         }
         
         public static function createSessionInDatabase() {
             $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
             if ($con) { 
-                $sql = "INSERT INTO thumbsbar.progress (session) VALUES ('".session_id()."') ON DUPLICATE KEY UPDATE starttime=CURRENT_TIMESTAMP;";
+                $sql = "INSERT INTO thumbsbar.progress (session) VALUES ('".$session_id."') ON DUPLICATE KEY UPDATE starttime=CURRENT_TIMESTAMP;";
                 mysql_query($sql);
             }
         }
@@ -87,9 +91,11 @@ class ThumbsBar {
         public static function getProgressFromDatabase() {
             $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
             if ($con) {
-                $sql = "SELECT * FROM thumbsbar.progress  WHERE session='".session_id()."';";
+                $sql = "SELECT * FROM thumbsbar.progress  WHERE session='".$session_id."';";
                 $result = mysql_query($sql);
                 $row=mysql_fetch_assoc($result);
+                $progress = $row['current_thumb']."|".$row['total_thumbs'];
+                return $progress;
             }
         }
         
@@ -99,9 +105,10 @@ class ThumbsBar {
 		$thumbs			= array();
 		
 		// For each image file, create a thumbnail and save it to an array
-		
+		$thumb_number = 0;
 		foreach ($this->files as $file) {
-		
+                        $thumb_number++;
+                        ThumbsBar::setProgressInDatabase($thumb_number, count($this->files));
 			$thumb = new Imagick($this->dir . $file);
 			$thumb->thumbnailImage($width, $height, true);
 			

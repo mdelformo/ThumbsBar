@@ -43,7 +43,7 @@
 	<p>	
                 <a onclick="startRequestInterval()">Test progress...</a><br><br>
                 <a onclick="createThumbsBar()">Create thumbnails</a><br><br>
-		<a onclick="showThumbsBar()">Show thumbnails</a></p>
+		<a onclick="if (showThumbsBar()) startRequestInterval();">Show thumbnails</a></p>
 
 <!-- <button id="bcreate" onclick="createThumbsBar()">Create thumbnails</button>
 	 <button id="bshow" onclick="showThumbsBar()">Show thumbnails</button> -->

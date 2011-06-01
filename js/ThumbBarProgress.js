@@ -56,7 +56,7 @@ function ThumbBarProgress (outputDiv) {
     
     this.startInterval = function() {
         if (_isFinishedProgressing) {
-            _interval = setInterval("thumbBarProgress.startAjaxRequest();",500);
+            _interval = setInterval("thumbBarProgress.startAjaxRequest();",100);
         }
     }
 
@@ -82,6 +82,6 @@ var thumbBarProgress;
 
 function startRequestInterval() {
     thumbBarProgress = new ThumbBarProgress(document.getElementById('progressbar2'));
-    //thumbBarProgress.startInterval();
-    thumbBarProgress.startAjaxRequest();
+    thumbBarProgress.startInterval();
+    //thumbBarProgress.startAjaxRequest();
 }
