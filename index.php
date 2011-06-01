@@ -41,15 +41,14 @@
 	<br><br>
 
 	<p>	
-                <a onclick="startRequestInterval()">Test progress...</a><br><br>
-                <a onclick="createThumbsBar()">Create thumbnails</a><br><br>
-		<a onclick="if (showThumbsBar()) startRequestInterval();">Show thumbnails</a></p>
+                <a onclick="startCreatingThumbnails();">Create thumbnails</a><br><br>
+		<a onclick="showThumbsBar()">Show thumbnails</a></p>
 
 <!-- <button id="bcreate" onclick="createThumbsBar()">Create thumbnails</button>
 	 <button id="bshow" onclick="showThumbsBar()">Show thumbnails</button> -->
 	
 	<div id="progressbar"></div>
-        <div id="progressbar2"></div>
+        <div id="progressbar_output"></div>
 
 </div>
 

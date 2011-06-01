@@ -7,6 +7,11 @@ function ThumbBarProgress (outputDiv) {
     if (!window.XMLHttpRequest) {
         throw new Error("XMLHttpRequest not supported");
     }
+    
+    this.isProcessing = function() {
+        return !_isFinishedProgressing;
+    }
+
 
     this.ajaxReturn = function () {
         if (_ajaxRequest && _ajaxRequest.readyState==4) {
@@ -81,7 +86,22 @@ function ThumbBarProgress (outputDiv) {
 var thumbBarProgress;
 
 function startRequestInterval() {
-    thumbBarProgress = new ThumbBarProgress(document.getElementById('progressbar2'));
-    thumbBarProgress.startInterval();
-    //thumbBarProgress.startAjaxRequest();
+    if (!thumbBarProgress.isProcessing()) {
+        //        thumbBarProgress = new ThumbBarProgress(document.getElementById('progressbar2'));
+        thumbBarProgress.startInterval();
+    }
+
 }
+
+function startCreatingThumbnails() {
+    if (!thumbBarProgress.isProcessing()) {
+        if (createThumbsBar()) 
+        {
+            startRequestInterval();
+        }
+    }
+}
+
+window.onload = function() {
+    thumbBarProgress = new ThumbBarProgress(document.getElementById('progressbar_output'));  
+};

@@ -33,11 +33,11 @@ function createThumbsBar() {
 	 	}
 	  	
 	  	request.send(null);
-	  	
+	  	return true;  // it is ok to check for progress
 	} else { 
 	
 		document.getElementById("progressbar").innerHTML = 'A folder must be selected';
-		
+		return false;  // it is not ok to check for progress
 	}
 	
 }
