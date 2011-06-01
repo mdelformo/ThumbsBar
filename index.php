@@ -7,7 +7,7 @@
 <head>
 
 <script	type="text/javascript" src="js/functions.js"></script>
-<script	type="text/javascript" src="js/ThumbBarProgress.js"></script>
+<script	type="text/javascript" src="js/ThumbBarProgress.js"></script> 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" href="css/default.css" type="text/css">
 
