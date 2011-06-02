@@ -87,7 +87,6 @@ var thumbBarProgress;
 
 function startRequestInterval() {
     if (!thumbBarProgress.isProcessing()) {
-        //        thumbBarProgress = new ThumbBarProgress(document.getElementById('progressbar2'));
         thumbBarProgress.startInterval();
     }
 

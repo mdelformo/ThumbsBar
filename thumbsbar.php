@@ -1,7 +1,8 @@
 <?php
 session_start();
+//ThumbsBar::initializeDatabase();  // uncomment to create a database with a table. A user with privileges has to be created manually (user: ThumbBarUser password: ThumbBarUser).
 ThumbsBar::setSessionId(session_id());
-session_write_close();
+session_write_close();  // Otherwise ajax calls will have to wait until the the script ends.
 ThumbsBar::createSessionInDatabase();
 $req;
 
@@ -78,7 +79,6 @@ class ThumbsBar {
                 $sql = "UPDATE thumbsbar.progress SET current_thumb='".$file_number."', total_thumbs='".$total_files."' WHERE session='".ThumbsBar::$session_id."';";
                 mysql_query($sql);
             }
-            usleep(100);
         }
         
         public static function createSessionInDatabase() {
