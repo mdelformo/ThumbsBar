@@ -47,6 +47,10 @@ class ThumbsBar {
 		
 	}
                 
+        // Sets the progress of creating thumbnails in the session
+        // Parameters 
+        // $file_number: the current thumbnail number being created
+        // $total_files: the total amount of thumbnails to be created. 
         public static function setProgress($file_number, $total_files) {
             session_start();
             $_SESSION['file_number'] = $file_number;
@@ -54,6 +58,10 @@ class ThumbsBar {
             session_write_close();
         }
         
+        // Returns
+        // If no thumnails have been created in the session: "0|0"         
+        // E.g. thumbnail 3 of 12: "3|12"
+        // Finally it becomes e.g. "12|12" and stays that way until setProgress() is called. 
         public static function getProgress() {
             session_start();
             if (isset($_SESSION['file_number'])) {
