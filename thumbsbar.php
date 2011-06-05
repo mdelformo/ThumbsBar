@@ -1,9 +1,4 @@
 <?php
-session_start();
-//ThumbsBar::initializeDatabase();  // uncomment to create a database with a table. A user with privileges has to be created manually (user: ThumbBarUser password: ThumbBarUser).
-ThumbsBar::setSessionId(session_id());
-session_write_close();  // Otherwise ajax calls will have to wait until the the script ends.
-ThumbsBar::createSessionInDatabase();
 $req;
 
 set_time_limit(120);		// Increase from default 30 to allow large folders
@@ -33,7 +28,7 @@ if(isset($_GET['q'])) {
 	}
         
         if ($req === "progress") {
-            print ThumbsBar::getProgressFromDatabase();
+            print ThumbsBar::getProgress();
         }
 
 }
@@ -43,7 +38,6 @@ class ThumbsBar {
 	private $dir;
 	private $filename;
 	private $files;
-        private static $session_id;
 
         function ThumbsBar($dir, $filename = 'thumbsbar.jpg') {
 
@@ -52,52 +46,23 @@ class ThumbsBar {
 		$this->files	= $this->getImages($this->dir);
 		
 	}
-        
-        public static function initializeDatabase() {
-            $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
-            if ($con) { 
-                if (mysql_query("CREATE DATABASE IF NOT EXISTS thumbsbar",$con))
-                  {
-                    if (mysql_select_db('thumbsbar', $con)) {
-                        $sql="DROP TABLE IF EXISTS progress";
-                        mysql_query($sql);
-                        $sql = "CREATE TABLE progress (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, starttime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, session VARCHAR(100) NOT NULL, current_thumb INT NOT NULL DEFAULT 0, total_thumbs INT NOT NULL DEFAULT 0, UNIQUE KEY secondary (session)) ENGINE = MyISAM;";
-                        mysql_query($sql);
-                        }
-                  }
-                mysql_close($con);    
-            }
+                
+        public static function setProgress($file_number, $total_files) {
+            session_start();
+            $_SESSION['file_number'] = $file_number;
+            $_SESSION['total_files'] = $total_files;
+            session_write_close();
         }
         
-        public static function setSessionId($session_id) {
-            ThumbsBar::$session_id = $session_id;
-        }
-
-        public static function setProgressInDatabase($file_number, $total_files) {
-            $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
-            if ($con) { 
-                $sql = "UPDATE thumbsbar.progress SET current_thumb='".$file_number."', total_thumbs='".$total_files."' WHERE session='".ThumbsBar::$session_id."';";
-                mysql_query($sql);
-            }
-        }
-        
-        public static function createSessionInDatabase() {
-            $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
-            if ($con) { 
-                $sql = "INSERT INTO thumbsbar.progress (session) VALUES ('".ThumbsBar::$session_id."') ON DUPLICATE KEY UPDATE starttime=CURRENT_TIMESTAMP;";
-                mysql_query($sql);
-            }
-        }
-        
-        public static function getProgressFromDatabase() {
-            $con = mysql_connect("localhost","ThumbBarUser","ThumbBarUser");
-            if ($con) {
-                $sql = "SELECT * FROM thumbsbar.progress  WHERE session='".ThumbsBar::$session_id."';";
-                $result = mysql_query($sql);
-                $row=mysql_fetch_assoc($result);
-                $progress = $row['current_thumb']."|".$row['total_thumbs'];
+        public static function getProgress() {
+            session_start();
+            if (isset($_SESSION['file_number'])) {
+                $progress = $_SESSION['file_number']."|".$_SESSION['total_files'];
                 return $progress;
+            } else {
+                return "0|0";
             }
+            session_write_close();
         }
         
 	public function createThumbs($width, $height) {
@@ -109,7 +74,7 @@ class ThumbsBar {
 		$thumb_number = 0;
 		foreach ($this->files as $file) {
                         $thumb_number++;
-                        ThumbsBar::setProgressInDatabase($thumb_number, count($this->files));
+                        ThumbsBar::setProgress($thumb_number, count($this->files));
 			$thumb = new Imagick($this->dir . $file);
 			$thumb->thumbnailImage($width, $height, true);
 			
@@ -243,14 +208,23 @@ class ThumbsBar {
 
 	}
 	
-	// Returns: An array of all folders in the current folder.
+
+    // Parameter: The folder to start with (defaults to the current folder).
+    // Returns: An array of all folders within the folder except '.' and '..'.
+        
     static function getFolders($startFolder = './') {
         $ignoredFolder[] = '.';
         $ignoredFolder[] = '..';
         if (is_dir($startFolder)) {
-            if ($folderHandle = opendir($startFolder)) {
-                while (($folder = readdir($folderHandle)) !== false) {
-                    if (!(array_search($folder, $ignoredFolder) > -1)) {
+            $folderHandle = opendir($startFolder);
+            if ($folderHandle) {
+                while (true) {
+                    $folder = readdir($folderHandle);
+                    if ($folder === false) {
+                        break;
+                    }
+                    $is_ignored_folder = array_search($folder, $ignoredFolder);
+                    if (!$is_ignored_folder) {
                         if (filetype($startFolder . $folder) == "dir") {
                             $folders[] = $folder;
                         }
